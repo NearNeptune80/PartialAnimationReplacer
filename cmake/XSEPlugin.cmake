@@ -74,7 +74,6 @@ if(CMAKE_GENERATOR MATCHES "Visual Studio")
 		PRIVATE
 		/MP
 		/W4
-		/WX
 		/permissive-
 		/Zc:alignedNew
 		/Zc:auto
@@ -107,12 +106,12 @@ if(CMAKE_GENERATOR MATCHES "Visual Studio")
 	target_link_options(
 		${PROJECT_NAME}
 		PRIVATE
-		/WX
 		"$<$<CONFIG:DEBUG>:/INCREMENTAL;/OPT:NOREF;/OPT:NOICF>"
 		"$<$<CONFIG:RELEASE>:/LTCG;/INCREMENTAL:NO;/OPT:REF;/OPT:ICF;/DEBUG:FULL>"
 	)
 endif()
 
+set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
 add_subdirectory(${CommonLibPath} ${CommonLibName} EXCLUDE_FROM_ALL)
 
 find_package(spdlog CONFIG REQUIRED)

@@ -1,0 +1,40 @@
+name: Build PartialAnimationReplacer
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  BUILD_TYPE: Release
+  PROJECT_NAME: PartialAnimationReplacer
+
+jobs:
+  build-skse:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - uses: lukka/get-cmake@latest
+
+    - name: Cache vcpkg packages
+      uses: lukka/run-vcpkg@v11
+      with:
+        vcpkgJsonGlob: 'vcpkg.json'
+
+    - name: Run CMake
+      run: |
+        cmake -S . --preset=ALL
+        cmake --build build --config Release
+
+    - name: Upload DLL artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PROJECT_NAME }}-DLL
+        path: |
+          build/Release/PartialAnimationReplacer.dll
+          build/Release/PartialAnimationReplacer.pdb
+        retention-days: 90
