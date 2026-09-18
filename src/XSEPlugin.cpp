@@ -36,7 +36,17 @@ void Listener(SKSE::MessagingInterface::Message* message) noexcept
 	}
 }
 
-extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_skse)
+SKSEPluginInfo(
+	.Version = Plugin::VERSION,
+	.Name = Plugin::NAME,
+	.Author = ""sv,
+	.SupportEmail = ""sv,
+	.StructCompatibility = SKSE::StructCompatibility::Independent,
+	.RuntimeCompatibility = SKSE::VersionIndependence::AddressLibrary,
+	.MinimumSKSEVersion = REL::Version{ 0, 0, 0, 0 }
+)
+
+SKSEPluginLoad(const SKSE::LoadInterface* a_skse)
 {
 	InitializeLog();
 	logger::info("Loaded plugin {} {}", Plugin::NAME, Plugin::VERSION.string());
@@ -50,22 +60,5 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_s
 	const auto papyrus = SKSE::GetPapyrusInterface();
 	papyrus->Register(Papyrus::RegisterFunctions);
 
-	return true;
-}
-
-extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []() noexcept {
-	SKSE::PluginVersionData v;
-	v.PluginName(Plugin::NAME.data());
-	v.PluginVersion(Plugin::VERSION);
-	v.UsesAddressLibrary(true);
-	v.HasNoStructUse();
-	return v;
-}();
-
-extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface*, SKSE::PluginInfo* pluginInfo)
-{
-	pluginInfo->name = SKSEPlugin_Version.pluginName;
-	pluginInfo->infoVersion = SKSE::PluginInfo::kVersion;
-	pluginInfo->version = SKSEPlugin_Version.pluginVersion;
 	return true;
 }
